@@ -46,9 +46,9 @@ If not found, enter the upper directory to continue this process.
 
 The following built-in variables can be used in the config.
 
-- `$@` - pass-through command line arguments
-- `$cwd` - the current directory when executing the command
-- `$file` - file path,
-- `$fileFolder` - the path to the directory where the file is located
+- `$@` - pass-through command line parameters
+- `$file` - file path
+- `$fileDir` - file directory, process's cwd will be set to this value
+- `$currentDir` - the current directory
 
 These variables(exclude `$@`) are also synced to environment variables. Such as `$file` => `$TASK_FILE`
