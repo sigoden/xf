@@ -2,20 +2,20 @@ use anyhow::{anyhow, Result};
 use std::{
     collections::HashMap,
     fs,
-    path::{PathBuf, Path},
+    path::{Path, PathBuf},
     process::{Command, ExitStatus},
 };
 
-pub struct Task {
+pub struct Runner {
     rules: Vec<Rule>,
 }
 
-impl Task {
+impl Runner {
     pub fn create(confix_content: Option<String>) -> Result<Self> {
-        let task = Self {
+        let xf = Self {
             rules: Self::load_rules(confix_content)?,
         };
-        Ok(task)
+        Ok(xf)
     }
 
     pub fn run(&self, cwd: &Path, args: &[String]) -> Result<ExitStatus> {
@@ -150,9 +150,9 @@ impl State {
     }
     pub fn env_vars(&self) -> HashMap<String, String> {
         let mut output: HashMap<String, String> = Default::default();
-        output.insert("TASK_CURRENT_DIR".into(), self.current_dir.clone());
-        output.insert("TASK_FILE".into(), self.file.clone());
-        output.insert("TASK_FILE_DIR".into(), self.file_dir.clone());
+        output.insert("XF_CURRENT_DIR".into(), self.current_dir.clone());
+        output.insert("XF_FILE".into(), self.file.clone());
+        output.insert("XF_FILE_DIR".into(), self.file_dir.clone());
         output
     }
 }

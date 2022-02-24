@@ -1,11 +1,11 @@
-# Task
+# xf
 
-Find a file in the current directory and upwards, then eXecute it.
+Find a file in the current directory and upwards, then execute it.
 
 
 ## Usage
 
-First, you need to define rules that tell `task` what files to look for and how to execute them.
+First, you need to define rules that tell `xf` what files to look for and how to execute them.
 
 We configure the rules in the following format:
 
@@ -13,7 +13,7 @@ We configure the rules in the following format:
 <file>:<command>
 ```
 
-> Configuration file path, Linux: `$HOME/.config/task/task`, macOS: `$HOME/Library/Preferences/task/task`
+> Configuration file path, Linux: `$HOME/.config/xf/xf`, macOS: `$HOME/Library/Preferences/xf/xf`
 
 
 Configure the following rules:
@@ -29,7 +29,7 @@ Task automatically inserts a built-in rule at the end
 Taskfile:$file $@
 ```
 
-execute `task foo`
+execute `xf foo`
 
 Look for a Taskfile in the current directory, and if found, execute `bash Somefile foo` .
 
@@ -51,4 +51,4 @@ The following built-in variables can be used in the config.
 - `$fileDir` - file directory, process's cwd will be set to this value
 - `$currentDir` - the current directory
 
-These variables(exclude `$@`) are also synced to environment variables. Such as `$file` => `$TASK_FILE`
+These variables(exclude `$@`) are also synced to environment variables. Such as `$file` => `$XF_FILE`

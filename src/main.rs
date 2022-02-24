@@ -7,7 +7,7 @@ use std::{
 };
 
 use anyhow::{anyhow, Result};
-use task::Task;
+use xf::Runner;
 
 const NAME: &str = env!("CARGO_CRATE_NAME");
 
@@ -24,8 +24,8 @@ fn run() -> Result<ExitStatus> {
     let args: Vec<String> = args().collect();
     let cwd = env::current_dir().map_err(|e| anyhow!("Fail to get cwd, {}", e))?;
     let rules = load_config_file()?;
-    let task = Task::create(rules)?;
-    task.run(&cwd, &args[1..])
+    let runner = Runner::create(rules)?;
+    runner.run(&cwd, &args[1..])
 }
 
 fn load_config_file() -> Result<Option<String>> {

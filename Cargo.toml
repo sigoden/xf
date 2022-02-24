@@ -1,12 +1,12 @@
 [package]
-name = "task"
+name = "xf"
 version = "0.1.0"
 edition = "2021"
 authors = ["sigoden <sigoden@gmail.com>"]
 description = "Find then execute file"
 license = "MIT OR Apache-2.0"
-homepage = "https://github.com/sigoden/task"
-repository = "https://github.com/sigoden/task"
+homepage = "https://github.com/sigoden/xf"
+repository = "https://github.com/sigoden/xf"
 autotests = false
 categories = ["command-line-utilities"]
 keywords = ["command-line", "args", "utility"]
