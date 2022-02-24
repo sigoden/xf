@@ -15,7 +15,7 @@ fn main() {
     match run() {
         Ok(status) => exit(status.code().unwrap_or_default()),
         Err(err) => {
-            eprintln!("error: {}", err.to_string());
+            eprintln!("error: {}", err);
         }
     }
 }

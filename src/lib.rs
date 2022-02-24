@@ -2,7 +2,7 @@ use anyhow::{anyhow, Result};
 use std::{
     collections::HashMap,
     fs,
-    path::PathBuf,
+    path::{PathBuf, Path},
     process::{Command, ExitStatus},
 };
 
@@ -18,7 +18,7 @@ impl Task {
         Ok(task)
     }
 
-    pub fn run(&self, cwd: &PathBuf, args: &[String]) -> Result<ExitStatus> {
+    pub fn run(&self, cwd: &Path, args: &[String]) -> Result<ExitStatus> {
         let (rule, file) = self
             .search_folder_recursive(cwd)
             .ok_or(anyhow!("Not found target file"))?;
@@ -52,18 +52,17 @@ impl Task {
         }
     }
 
-    fn search_folder_recursive(&self, folder: &PathBuf) -> Option<(&Rule, PathBuf)> {
-        let mut folder = folder.clone();
+    fn search_folder_recursive(&self, mut folder: &Path) -> Option<(&Rule, PathBuf)> {
         loop {
-            let result = self.search_folder(&folder);
+            let result = self.search_folder(folder);
             if result.is_some() {
                 return result;
             }
-            folder = folder.parent()?.to_path_buf();
+            folder = folder.parent()?
         }
     }
 
-    fn search_folder(&self, folder: &PathBuf) -> Option<(&Rule, PathBuf)> {
+    fn search_folder(&self, folder: &Path) -> Option<(&Rule, PathBuf)> {
         let paths = fs::read_dir(folder).ok()?;
         for path in paths {
             let path = path.ok()?.path();
@@ -77,7 +76,7 @@ impl Task {
         None
     }
 
-    fn match_rule(&self, file: &PathBuf) -> Option<&Rule> {
+    fn match_rule(&self, file: &Path) -> Option<&Rule> {
         self.rules.iter().find(|v| v.is_match_file(file))
     }
 }
@@ -93,7 +92,7 @@ impl Rule {
         let pos = text.find(':').ok_or_else(|| anyhow!("Invalid rule"))?;
         let (name, shell) = text.split_at(pos);
         let rule = Rule {
-            name: name.to_lowercase().to_string(),
+            name: name.to_lowercase(),
             shell: shell[1..].trim().to_string(),
         };
         Ok(rule)
@@ -106,7 +105,7 @@ impl Rule {
         }
     }
 
-    pub fn is_match_file(&self, file: &PathBuf) -> bool {
+    pub fn is_match_file(&self, file: &Path) -> bool {
         file.file_name()
             .and_then(|v| v.to_str())
             .map(|v| v.to_lowercase().starts_with(&self.name))
@@ -122,7 +121,7 @@ struct State {
 }
 
 impl State {
-    pub fn new(current_dir: &PathBuf, file: &PathBuf) -> Self {
+    pub fn new(current_dir: &Path, file: &Path) -> Self {
         let current_dir = current_dir.to_string_lossy().to_string();
         let file_dir = file.parent().unwrap().to_string_lossy().to_string();
         let file = file.to_string_lossy().to_string();
