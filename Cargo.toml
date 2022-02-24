@@ -1,0 +1,21 @@
+[package]
+name = "task"
+version = "0.1.0"
+edition = "2021"
+authors = ["sigoden <sigoden@gmail.com>"]
+description = "Find then execute file"
+license = "MIT OR Apache-2.0"
+homepage = "https://github.com/sigoden/task"
+repository = "https://github.com/sigoden/task"
+autotests = false
+categories = ["command-line-utilities"]
+keywords = ["command-line", "args", "utility"]
+
+
+[dependencies]
+anyhow = "1"
+dirs = "4"
+shell-words = "1.1"
+
+[profile.release]
+lto = true
