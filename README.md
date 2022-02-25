@@ -13,7 +13,10 @@ We configure the rules in the following format:
 <file>:<command>
 ```
 
-> Configuration file path, Linux: `$HOME/.config/xf/xf`, macOS: `$HOME/Library/Preferences/xf/xf`
+> Configuration file path:
+>   Linux: `$HOME/.config/xf/xf`
+>   macOS: `$HOME/Library/Preferences/xf/xf`
+>   Windows: `$env:USERPROFILE\AppData\Roaming`
 
 
 Configure the following rules:
