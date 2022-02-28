@@ -116,11 +116,18 @@ jobs:
             echo "::set-output name=archive::$archive"
         fi
 
+    - name: Build Changelog
+      id: build_changelog
+      uses: mikepenz/release-changelog-builder-action@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Publish Archive
       uses: softprops/action-gh-release@v0.1.5
       if: ${{ startsWith(github.ref, 'refs/tags/') }}
       with:
         draft: false
+        body: ${{steps.build_changelog.outputs.changelog}}
         files: ${{ steps.package.outputs.archive }}
         prerelease: ${{ steps.check-tag.outputs.rc == 'true' }}
       env:
