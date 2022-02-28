@@ -50,4 +50,8 @@ The following built-in variables can be used in the config.
 - `$fileDir` - file directory, process's cwd will be set to this value
 - `$currentDir` - the current directory
 
-These variables(exclude `$@`) are also synced to environment variables. Such as `$file` => `$XF_FILE`
+These variables(exclude `$@`) are also synced to environment variables:
+
+- `$file` => `$XF_FILE`
+- `$fileDir` => `$XF_FILE_DIR`
+- `$currentDir` => `$XF_CURRENT_DIR`
