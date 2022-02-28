@@ -14,7 +14,6 @@ keywords = ["command-line", "args", "utility"]
 
 [dependencies]
 anyhow = "1"
-dirs = "4"
 shell-words = "1.1"
 
 [profile.release]

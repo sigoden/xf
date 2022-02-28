@@ -7,17 +7,13 @@ Find a file in the current directory and upwards, then execute it.
 
 First, you need to define rules that tell `xf` what files to look for and how to execute them.
 
-We configure the rules in the following format:
+Rules are specified through configuration file which is specified by the `XF_CONFIG_PATH` environment variable.
+
+Each line in the configuration file is a rule, and its format is:
 
 ```
 <file>:<command>
 ```
-
-> Configuration file path:
->   Linux: `$HOME/.config/xf/xf`
->   macOS: `$HOME/Library/Preferences/xf/xf`
->   Windows: `$env:USERPROFILE\AppData\Roaming`
-
 
 Configure the following rules:
 

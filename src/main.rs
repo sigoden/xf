@@ -1,4 +1,3 @@
-use dirs::config_dir;
 use std::{
     env::{self, args},
     fs,
@@ -9,7 +8,7 @@ use std::{
 use anyhow::{anyhow, Result};
 use xf::Runner;
 
-const NAME: &str = env!("CARGO_CRATE_NAME");
+const ENV_NAME: &str = "XF_CONFIG_PATH";
 
 fn main() {
     match run() {
@@ -29,11 +28,10 @@ fn run() -> Result<ExitStatus> {
 }
 
 fn load_config_file() -> Result<Option<String>> {
-    let mut config_file = match config_dir() {
-        Some(dir) => dir,
-        None => return Ok(None),
+    let config_file = match env::var(ENV_NAME) {
+        Ok(v) => v,
+        Err(_) => return Ok(None),
     };
-    config_file.extend(&[NAME, NAME]);
     let path = Path::new(&config_file);
     if !path.exists() {
         return Ok(None);
