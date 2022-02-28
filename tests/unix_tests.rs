@@ -1,27 +1,4 @@
-use assert_cmd::Command;
-
-macro_rules! assert_output {
-    ($assert:expr, $output:literal, $from:expr, $to:expr) => {
-        let output = $assert.get_output();
-        let content = String::from_utf8_lossy(&output.stdout);
-        let content = content.replace($from, $to);
-        assert_eq!(&content, $output)
-    };
-}
-
-fn xf() -> Command {
-    Command::cargo_bin(assert_cmd::crate_name!()).unwrap()
-}
-
-fn fixtures_dir(paths: &[&str]) -> String {
-    let mut dir = std::env::current_dir().unwrap();
-    dir.push("tests");
-    dir.push("fixtures");
-    for p in paths {
-        dir.push(p)
-    }
-    dir.to_string_lossy().to_string()
-}
+use crate::{assert_output, fixtures_dir, xf, ENV_NAME};
 
 #[test]
 fn basic() {
@@ -46,7 +23,7 @@ args: a b
 fn with_config() {
     let assert = xf()
         .current_dir("tests/fixtures/dir1")
-        .env("XF_CONFIG_PATH", &fixtures_dir(&["dir1", "config1"]))
+        .env(ENV_NAME, &fixtures_dir(&["dir1", "config1"]))
         .args(&["a", "b"])
         .assert()
         .success();
@@ -66,7 +43,7 @@ args: foo a b
 fn with_config_contains_spaces_and_comment() {
     let assert = xf()
         .current_dir("tests/fixtures/dir1")
-        .env("XF_CONFIG_PATH", &fixtures_dir(&["dir1", "config2"]))
+        .env(ENV_NAME, &fixtures_dir(&["dir1", "config2"]))
         .args(&["a", "b"])
         .assert()
         .success();
