@@ -116,27 +116,21 @@ jobs:
             echo "::set-output name=archive::$archive"
         fi
 
+    - name: Build changelog
+      id: build-changelog
+      uses: ardalanamini/auto-changelog@v1
+      if: ${{ matrix.target == 'x86_64-unknown-linux-musl' }}
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        exclude: 'perf,other'
+
     - name: Publish Archive
       uses: softprops/action-gh-release@v0.1.5
       if: ${{ startsWith(github.ref, 'refs/tags/') }}
       with:
         draft: false
         files: ${{ steps.package.outputs.archive }}
+        body: ${{steps.build-changelog.outputs.changelog}}
         prerelease: ${{ steps.check-tag.outputs.rc == 'true' }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Build Changelog
-      id: build_changelog
-      if: ${{ matrix.target == 'x86_64-unknown-linux-musl' }}
-      uses: heinrichreimer/github-changelog-generator-action@v2.3
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Publish Changelog
-      uses: softprops/action-gh-release@v0.1.5
-      if: ${{ steps.build_changelog.outputs.changelog }}
-      with:
-        draft: false
-        body: ${{steps.build_changelog.outputs.changelog}}
-        prerelease: ${{ steps.check-tag.outputs.rc == 'true' }}
