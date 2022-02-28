@@ -42,6 +42,10 @@ impl Runner {
             Some(text) => {
                 let mut rules = Vec::new();
                 for (idx, line) in text.lines().enumerate() {
+                    let line = line.trim();
+                    if line.len() == 0 || line.starts_with('#') {
+                        continue;
+                    }
                     let rule = Rule::create(line)
                         .map_err(|_| anyhow!("Config file has invalid rule at line {}", idx + 1))?;
                     rules.push(rule);

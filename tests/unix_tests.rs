@@ -63,6 +63,26 @@ args: foo a b
 }
 
 #[test]
+fn with_config_contains_spaces_and_comment() {
+    let assert = xf()
+        .current_dir("tests/fixtures/dir1")
+        .env("XF_CONFIG_PATH", &fixtures_dir(&["dir1", "config2"]))
+        .args(&["a", "b"])
+        .assert()
+        .success();
+    assert_output!(
+        assert,
+        r#"file: <dir>/dir1/Taskfile
+fileDir <dir>/dir1
+currentDir: <dir>/dir1
+args: foo a b
+"#,
+        &fixtures_dir(&[]),
+        "<dir>"
+    );
+}
+
+#[test]
 fn search_parent_path() {
     let assert = xf()
         .current_dir("tests/fixtures/dir1/dir2")
