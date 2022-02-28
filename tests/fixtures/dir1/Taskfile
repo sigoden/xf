@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo file: $XF_FILE
+echo fileDir $XF_FILE_DIR
+echo currentDir: $XF_CURRENT_DIR
+echo args: $@

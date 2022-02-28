@@ -1,6 +1,6 @@
 [package]
 name = "xf"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 authors = ["sigoden <sigoden@gmail.com>"]
 description = "Find then execute file"
@@ -20,3 +20,11 @@ shell-words = "1.1"
 lto = true
 strip = true
 opt-level = "z"
+
+[dev-dependencies]
+assert_cmd = "2.0"
+
+
+[[test]]
+name = "integration"
+path = "tests/tests.rs"
