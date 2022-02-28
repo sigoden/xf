@@ -126,9 +126,9 @@ struct State {
 
 impl State {
     pub fn new(current_dir: &Path, file: &Path) -> Self {
-        let current_dir = current_dir.to_string_lossy().to_string();
-        let file_dir = file.parent().unwrap().to_string_lossy().to_string();
-        let file = file.to_string_lossy().to_string();
+        let current_dir = stringify_path(current_dir);
+        let file_dir = stringify_path(file.parent().unwrap());
+        let file = stringify_path(file);
         Self {
             current_dir,
             file,
@@ -159,6 +159,10 @@ impl State {
         output.insert("XF_FILE_DIR".into(), self.file_dir.clone());
         output
     }
+}
+
+fn stringify_path(path: &Path) -> String {
+    path.to_string_lossy().escape_debug().to_string()
 }
 
 #[cfg(test)]
