@@ -30,11 +30,16 @@ fn basic() {
         .args(&["a", "b"])
         .assert()
         .success();
-    assert_output!(assert, r#"file: <dir>/dir1/Taskfile
+    assert_output!(
+        assert,
+        r#"file: <dir>/dir1/Taskfile
 fileDir <dir>/dir1
 currentDir: <dir>/dir1
 args: a b
-"#, &fixtures_dir(&[]), "<dir>");
+"#,
+        &fixtures_dir(&[]),
+        "<dir>"
+    );
 }
 
 #[test]
@@ -45,11 +50,16 @@ fn with_config() {
         .args(&["a", "b"])
         .assert()
         .success();
-    assert_output!(assert, r#"file: <dir>/dir1/Taskfile
+    assert_output!(
+        assert,
+        r#"file: <dir>/dir1/Taskfile
 fileDir <dir>/dir1
 currentDir: <dir>/dir1
 args: foo a b
-"#, &fixtures_dir(&[]), "<dir>");
+"#,
+        &fixtures_dir(&[]),
+        "<dir>"
+    );
 }
 
 #[test]
@@ -59,9 +69,14 @@ fn search_parent_path() {
         .args(&["a", "b"])
         .assert()
         .success();
-    assert_output!(assert, r#"file: <dir>/dir1/Taskfile
+    assert_output!(
+        assert,
+        r#"file: <dir>/dir1/Taskfile
 fileDir <dir>/dir1
 currentDir: <dir>/dir1/dir2
 args: a b
-"#, &fixtures_dir(&[]), "<dir>");
+"#,
+        &fixtures_dir(&[]),
+        "<dir>"
+    );
 }
