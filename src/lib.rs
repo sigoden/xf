@@ -43,7 +43,7 @@ impl Runner {
                 let mut rules = Vec::new();
                 for (idx, line) in text.lines().enumerate() {
                     let line = line.trim();
-                    if line.len() == 0 || line.starts_with('#') {
+                    if line.is_empty() || line.starts_with('#') {
                         continue;
                     }
                     let rule = Rule::create(line)
