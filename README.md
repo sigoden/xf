@@ -1,49 +1,49 @@
 # xf
 
-Find a file in the current directory and upwards, then execute it.
+File-aware dynamic command runner.
 
+Xf try to find a file from the current directory and upwards, and execute different command according to the different file found.
 
 ## Usage
 
-First, you need to define rules that tell `xf` what files to look for and how to execute them.
+Xf loads rules from configuration file.
 
-Rules are specified through configuration file which is specified by the `XF_CONFIG_PATH` environment variable.
+> The default path of configuration file is `$HOME/.xf`, which can be specified with the `XF_CONFIG_PATH` environment variable.
 
-Each line in the configuration file is a rule, and its format is:
+Rule format is:
 
 ```
-<file>:<command>
+<file>: <command>
 ```
+
+`<file>` tell `xf` what file to find, `<command>` tell `xf` what command to execute if found.
+
+> `xf` has a built-in lowest priority rule: `Xfile: $file $@`
+
 
 Configure the following rules:
 
 ```
-Somefile:bash $file $@
-Makefile:make $@
+Taskfile: bash $file $@
 ```
 
-Task automatically inserts a built-in rule at the end
+Run `xf foo`.
 
-```
-Xfile:$file $@
-```
+`xf` try to find for `Taskfile` file in the current directory, and if found, execute `bash $file foo` .
 
-execute `xf foo`
+If not found, continue finding for `Xfile` file in the current directory, if found, execute `Xfile foo` (built-in rule).
 
-Look for a Xfile in the current directory, and if found, execute `bash Xfile foo` .
-
-If not found, continue to look for the Makefile in the current directory, if found, execute `make foo`.
-
-If not found, continue to look for Xfile in the current directory, if found, execute `Xfile foo`.
-
-If not found, enter the upper directory to continue this process.
+If not found, enter the parent directory to continue this process.
  
-**Ignore suffix and case** when matching files.
+File matching rules:
+
+1. Ignore case. `Xfile` can match files `xfile`, `xFile`.
+
+2. Find the filename that contains the rule filename. `Xfile` can match the files `Xfile.sh`, `Xfile.cmd`.
 
 ## Variables
 
-
-The following built-in variables can be used in the config.
+The following built-in variables can be used in the command part of rule.
 
 - `$@` - pass-through command line parameters
 - `$file` - file path
@@ -56,16 +56,24 @@ These variables(exclude `$@`) are also synced to environment variables:
 - `$fileDir` => `XF_FILE_DIR`
 - `$currentDir` => `XF_CURRENT_DIR`
 
-## Exe Name
+## Command Name
 
-Actually, the exe name affect builtin-rule and environment variable prefix.
+Actually, the command name affect builtin-rule and environment variable prefix.
 
-If you rename executable file `xf`  to `task`, The built-in rule will be:
+If you rename executable file `xf`  to `task`:
 
-```
-Taskfile:$file $@
-```
+1. The built-in rule will be `Taskfile: $file $@`
 
-The environment variable `XF_CONFIG_PATH` will be `TASK_CONFIG_PATH`.
+2. The default configuration file path will be `$HOME/.task`.
 
-The environment variable for `$file` will be `TASK_FILE`。
+3. The environment variable `XF_CONFIG_PATH` will be `TASK_CONFIG_PATH`.
+
+4. The environment variable for `$file` will be `TASK_FILE`。
+
+## License
+
+Copyright (c) 2022 xf-developers.
+
+argc is made available under the terms of either the MIT License or the Apache License 2.0, at your option.
+
+See the LICENSE-APACHE and LICENSE-MIT files for license details.
