@@ -1,10 +1,9 @@
-use crate::{assert_output, env_config_path, fixtures_dir, xf};
+use crate::{assert_output, env_config_path, fixtures_dir, xf_with_config};
 
 #[test]
 fn with_config() {
-    let assert = xf()
+    let assert = xf_with_config(&["dir3", "config1"])
         .current_dir("tests/fixtures/dir3")
-        .env(env_config_path(), &fixtures_dir(&["dir3", "config1"]))
         .args(&["a", "b"])
         .assert()
         .success();

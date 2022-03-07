@@ -23,6 +23,14 @@ fn env_config_path() -> String {
 fn xf() -> Command {
     let mut cmd = Command::cargo_bin(assert_cmd::crate_name!()).unwrap();
     cmd.env_remove(&env_config_path());
+    cmd.env_remove("HOME");
+    cmd.env_remove("USERPROFILE");
+    cmd
+}
+
+fn xf_with_config(paths: &[&str]) -> Command {
+    let mut cmd = xf();
+    cmd.env(env_config_path(), &fixtures_dir(paths));
     cmd
 }
 
