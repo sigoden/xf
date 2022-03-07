@@ -23,7 +23,7 @@ impl Runner {
     pub fn run(&self, cwd: &Path, args: &[String]) -> Result<ExitStatus> {
         let (rule, file) = self
             .search_folder_recursive(cwd)
-            .ok_or(anyhow!("Not found target file"))?;
+            .ok_or(anyhow!("Not found any matched file"))?;
         let state = State::new(cwd, &file);
         let env_vars = state.env_vars(&self.exe_name);
         let args = state
@@ -49,7 +49,7 @@ impl Runner {
                         continue;
                     }
                     let rule = Rule::create(line)
-                        .map_err(|_| anyhow!("Config file has invalid rule at line {}", idx + 1))?;
+                        .map_err(|_| anyhow!("Fail to parse rule in the config file at line {}", idx + 1))?;
                     rules.push(rule);
                 }
                 rules.push(Rule::get_exe_rule(exe_name));
@@ -85,7 +85,7 @@ struct Rule {
 
 impl Rule {
     pub fn create(text: &str) -> Result<Self> {
-        let pos = text.find(':').ok_or_else(|| anyhow!("Invalid rule"))?;
+        let pos = text.find(':').ok_or_else(|| anyhow!("Rule is invalid"))?;
         let (name, shell) = text.split_at(pos);
         let rule = Rule {
             name: name.trim().to_lowercase(),
