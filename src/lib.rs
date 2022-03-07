@@ -11,9 +11,9 @@ pub struct Runner {
 }
 
 impl Runner {
-    pub fn create(confix_content: Option<String>) -> Result<Self> {
+    pub fn create(config: Option<String>, exe_name: &str) -> Result<Self> {
         let xf = Self {
-            rules: Self::load_rules(confix_content)?,
+            rules: Self::load_rules(config, exe_name)?,
         };
         Ok(xf)
     }
@@ -33,12 +33,12 @@ impl Runner {
         command.envs(&env_vars);
         command
             .status()
-            .map_err(|e| anyhow!("Run file {} thorw {}", &state.file, e))
+            .map_err(|e| anyhow!("Run file {} throw {}", &state.file, e))
     }
 
-    fn load_rules(config_content: Option<String>) -> Result<Vec<Rule>> {
+    fn load_rules(config_content: Option<String>, exe_name: &str) -> Result<Vec<Rule>> {
         match config_content {
-            None => Ok(vec![Rule::get_defualt_rule()]),
+            None => Ok(vec![Rule::get_exe_rule(exe_name)]),
             Some(text) => {
                 let mut rules = Vec::new();
                 for (idx, line) in text.lines().enumerate() {
@@ -50,7 +50,7 @@ impl Runner {
                         .map_err(|_| anyhow!("Config file has invalid rule at line {}", idx + 1))?;
                     rules.push(rule);
                 }
-                rules.push(Rule::get_defualt_rule());
+                rules.push(Rule::get_exe_rule(exe_name));
                 Ok(rules)
             }
         }
@@ -102,9 +102,14 @@ impl Rule {
         Ok(rule)
     }
 
-    pub fn get_defualt_rule() -> Self {
+    pub fn get_exe_rule(exe_name: &str) -> Self {
+        let name = if exe_name.ends_with('f') {
+            format!("{}ile", exe_name)
+        } else {
+            format!("{}file", exe_name)
+        };
         Rule {
-            name: "taskfile".into(),
+            name,
             shell: "$file $@".into(),
         }
     }
@@ -209,8 +214,8 @@ mod tests {
         use super::*;
 
         macro_rules! new_state {
-            ($wokdir:expr, $file:expr) => {{
-                let current_dir: PathBuf = $wokdir.parse().unwrap();
+            ($workdir:expr, $file:expr) => {{
+                let current_dir: PathBuf = $workdir.parse().unwrap();
                 let file: PathBuf = $file.parse().unwrap();
                 State::new(&current_dir, &file)
             }};

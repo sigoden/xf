@@ -6,8 +6,6 @@ mod unix_tests;
 #[cfg(windows)]
 mod windows_tests;
 
-pub const ENV_NAME: &str = "XF_CONFIG_PATH";
-
 #[macro_export]
 macro_rules! assert_output {
     ($assert:expr, $output:literal, $from:expr, $to:expr) => {
@@ -18,9 +16,13 @@ macro_rules! assert_output {
     };
 }
 
+fn env_config_path() -> String {
+    format!("{}_CONFIG_PATH", assert_cmd::crate_name!())
+}
+
 fn xf() -> Command {
     let mut cmd = Command::cargo_bin(assert_cmd::crate_name!()).unwrap();
-    cmd.env_remove(ENV_NAME);
+    cmd.env_remove(&env_config_path());
     cmd
 }
 

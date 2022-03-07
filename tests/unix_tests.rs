@@ -1,4 +1,4 @@
-use crate::{assert_output, fixtures_dir, xf, ENV_NAME};
+use crate::{assert_output, env_config_path, fixtures_dir, xf};
 
 #[test]
 fn basic() {
@@ -9,7 +9,7 @@ fn basic() {
         .success();
     assert_output!(
         assert,
-        r#"file: <dir>/dir1/Taskfile
+        r#"file: <dir>/dir1/Xfile
 fileDir <dir>/dir1
 currentDir: <dir>/dir1
 args: a b
@@ -23,13 +23,13 @@ args: a b
 fn with_config() {
     let assert = xf()
         .current_dir("tests/fixtures/dir1")
-        .env(ENV_NAME, &fixtures_dir(&["dir1", "config1"]))
+        .env(env_config_path(), &fixtures_dir(&["dir1", "config1"]))
         .args(&["a", "b"])
         .assert()
         .success();
     assert_output!(
         assert,
-        r#"file: <dir>/dir1/Taskfile
+        r#"file: <dir>/dir1/Xfile
 fileDir <dir>/dir1
 currentDir: <dir>/dir1
 args: foo a b
@@ -43,13 +43,13 @@ args: foo a b
 fn with_config_contains_spaces_and_comment() {
     let assert = xf()
         .current_dir("tests/fixtures/dir1")
-        .env(ENV_NAME, &fixtures_dir(&["dir1", "config2"]))
+        .env(env_config_path(), &fixtures_dir(&["dir1", "config2"]))
         .args(&["a", "b"])
         .assert()
         .success();
     assert_output!(
         assert,
-        r#"file: <dir>/dir1/Taskfile
+        r#"file: <dir>/dir1/Xfile
 fileDir <dir>/dir1
 currentDir: <dir>/dir1
 args: foo a b
@@ -68,7 +68,7 @@ fn search_parent_path() {
         .success();
     assert_output!(
         assert,
-        r#"file: <dir>/dir1/Taskfile
+        r#"file: <dir>/dir1/Xfile
 fileDir <dir>/dir1
 currentDir: <dir>/dir1/dir2
 args: a b

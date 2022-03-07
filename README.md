@@ -25,16 +25,16 @@ Makefile:make $@
 Task automatically inserts a built-in rule at the end
 
 ```
-Taskfile:$file $@
+Xfile:$file $@
 ```
 
 execute `xf foo`
 
-Look for a Taskfile in the current directory, and if found, execute `bash Somefile foo` .
+Look for a Xfile in the current directory, and if found, execute `bash Xfile foo` .
 
 If not found, continue to look for the Makefile in the current directory, if found, execute `make foo`.
 
-If not found, continue to look for Taskfile in the current directory, if found, execute `Taskfile foo`.
+If not found, continue to look for Xfile in the current directory, if found, execute `Xfile foo`.
 
 If not found, enter the upper directory to continue this process.
  
@@ -52,6 +52,20 @@ The following built-in variables can be used in the config.
 
 These variables(exclude `$@`) are also synced to environment variables:
 
-- `$file` => `$XF_FILE`
-- `$fileDir` => `$XF_FILE_DIR`
-- `$currentDir` => `$XF_CURRENT_DIR`
+- `$file` => `XF_FILE`
+- `$fileDir` => `XF_FILE_DIR`
+- `$currentDir` => `XF_CURRENT_DIR`
+
+## Exe Name
+
+Actually, the exe name affect builtin-rule and environment variable prefix.
+
+If you rename executable file `xf`  to `task`, The built-in rule will be:
+
+```
+Taskfile:$file $@
+```
+
+The environment variable `XF_CONFIG_PATH` will be `TASK_CONFIG_PATH`.
+
+The environment variable for `$file` will be `TASK_FILE`。
