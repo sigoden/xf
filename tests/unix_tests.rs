@@ -77,3 +77,19 @@ args: a b
         "<dir>"
     );
 }
+
+#[test]
+fn rule_precedence() {
+    let assert = xf()
+        .current_dir("tests/fixtures/dir1")
+        .env(env_config_path(), &fixtures_dir(&["dir1", "config3"]))
+        .assert()
+        .success();
+    assert_output!(
+        assert,
+        r#"file: <dir>/dir1/Zfile
+"#,
+        &fixtures_dir(&[]),
+        "<dir>"
+    );
+}
