@@ -1,4 +1,4 @@
-use crate::{assert_output, env_config_path, fixtures_dir, xf_with_config};
+use crate::{assert_output, fixtures_dir, xf_with_config};
 
 #[test]
 fn with_config() {
