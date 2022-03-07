@@ -88,13 +88,14 @@ impl Rule {
         let pos = text.find(':').ok_or_else(|| anyhow!("Invalid rule"))?;
         let (name, shell) = text.split_at(pos);
         let rule = Rule {
-            name: name.to_lowercase(),
+            name: name.trim().to_lowercase(),
             shell: shell[1..].trim().to_string(),
         };
         Ok(rule)
     }
 
     pub fn get_exe_rule(exe_name: &str) -> Self {
+        let exe_name = exe_name.trim().to_lowercase();
         let name = if exe_name.ends_with('f') {
             format!("{}ile", exe_name)
         } else {
@@ -231,7 +232,7 @@ mod tests {
         }
 
         #[test]
-        fn test_buid_args() {
+        fn test_build_args() {
             assert_build_args!(
                 "Taskfile:$file $@",
                 "/tmp/test",
