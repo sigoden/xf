@@ -4,7 +4,7 @@ use crate::{assert_output, env_config_path, fixtures_dir, xf};
 fn with_config() {
     let assert = xf()
         .current_dir("tests/fixtures/dir3")
-        .env(env_config_path, &fixtures_dir(&["dir3", "config1"]))
+        .env(env_config_path(), &fixtures_dir(&["dir3", "config1"]))
         .args(&["a", "b"])
         .assert()
         .success();
