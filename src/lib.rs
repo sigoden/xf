@@ -8,12 +8,14 @@ use std::{
 
 pub struct Runner {
     rules: Vec<Rule>,
+    exe_name: String,
 }
 
 impl Runner {
     pub fn create(config: Option<String>, exe_name: &str) -> Result<Self> {
         let xf = Self {
             rules: Self::load_rules(config, exe_name)?,
+            exe_name: exe_name.to_string(),
         };
         Ok(xf)
     }
@@ -23,7 +25,7 @@ impl Runner {
             .search_folder_recursive(cwd)
             .ok_or(anyhow!("Not found target file"))?;
         let state = State::new(cwd, &file);
-        let env_vars = state.env_vars();
+        let env_vars = state.env_vars(&self.exe_name);
         let args = state
             .build_args(rule, args)
             .map_err(|_| anyhow!("Fail to build args for running {}", state.file))?;
@@ -157,11 +159,12 @@ impl State {
         }
         Ok(output)
     }
-    pub fn env_vars(&self) -> HashMap<String, String> {
+    pub fn env_vars(&self, exe_name: &str) -> HashMap<String, String> {
+        let prefix = exe_name.to_uppercase();
         let mut output: HashMap<String, String> = Default::default();
-        output.insert("XF_CURRENT_DIR".into(), self.current_dir.clone());
-        output.insert("XF_FILE".into(), self.file.clone());
-        output.insert("XF_FILE_DIR".into(), self.file_dir.clone());
+        output.insert(format!("{}_CURRENT_DIR", prefix), self.current_dir.clone());
+        output.insert(format!("{}_FILE", prefix), self.file.clone());
+        output.insert(format!("{}_FILE_DIR", prefix), self.file_dir.clone());
         output
     }
 }

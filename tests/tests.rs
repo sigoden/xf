@@ -17,7 +17,7 @@ macro_rules! assert_output {
 }
 
 fn env_config_path() -> String {
-    format!("{}_CONFIG_PATH", assert_cmd::crate_name!())
+    format!("{}_CONFIG_PATH", assert_cmd::crate_name!().to_uppercase())
 }
 
 fn xf() -> Command {

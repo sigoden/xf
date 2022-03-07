@@ -31,7 +31,7 @@ fn run() -> Result<ExitStatus> {
 }
 
 fn load_config_file(exe_name: &str) -> Result<Option<String>> {
-    let env_name = format!("{}_CONFIG_PATH", exe_name);
+    let env_name = format!("{}_CONFIG_PATH", exe_name.to_uppercase());
     let config_file = match env::var(&env_name) {
         Ok(v) => v,
         Err(_) => return Ok(None),
