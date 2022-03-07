@@ -60,30 +60,20 @@ impl Runner {
 
     fn search_folder_recursive(&self, mut folder: &Path) -> Option<(&Rule, PathBuf)> {
         loop {
-            let result = self.search_folder(folder);
-            if result.is_some() {
-                return result;
+            let children = fs::read_dir(folder).ok()?;
+            let mut paths = vec![];
+            for path in children {
+                paths.push(path.ok()?.path())
+            }
+            for rule in &self.rules {
+                for path in &paths {
+                    if rule.is_match_file(path) {
+                        return Some((rule, path.to_owned()));
+                    }
+                }
             }
             folder = folder.parent()?
         }
-    }
-
-    fn search_folder(&self, folder: &Path) -> Option<(&Rule, PathBuf)> {
-        let paths = fs::read_dir(folder).ok()?;
-        for path in paths {
-            let path = path.ok()?.path();
-            if !path.is_file() {
-                continue;
-            }
-            if let Some(rule) = self.match_rule(&path) {
-                return Some((rule, path));
-            }
-        }
-        None
-    }
-
-    fn match_rule(&self, file: &Path) -> Option<&Rule> {
-        self.rules.iter().find(|v| v.is_match_file(file))
     }
 }
 
