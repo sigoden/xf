@@ -8,12 +8,14 @@ use std::{
 
 pub struct Runner {
     rules: Vec<Rule>,
+    exe_name: String,
 }
 
 impl Runner {
-    pub fn create(confix_content: Option<String>) -> Result<Self> {
+    pub fn create(config: Option<String>, exe_name: &str) -> Result<Self> {
         let xf = Self {
-            rules: Self::load_rules(confix_content)?,
+            rules: Self::load_rules(config, exe_name)?,
+            exe_name: exe_name.to_string(),
         };
         Ok(xf)
     }
@@ -23,7 +25,7 @@ impl Runner {
             .search_folder_recursive(cwd)
             .ok_or(anyhow!("Not found target file"))?;
         let state = State::new(cwd, &file);
-        let env_vars = state.env_vars();
+        let env_vars = state.env_vars(&self.exe_name);
         let args = state
             .build_args(rule, args)
             .map_err(|_| anyhow!("Fail to build args for running {}", state.file))?;
@@ -33,12 +35,12 @@ impl Runner {
         command.envs(&env_vars);
         command
             .status()
-            .map_err(|e| anyhow!("Run file {} thorw {}", &state.file, e))
+            .map_err(|e| anyhow!("Run file {} throw {}", &state.file, e))
     }
 
-    fn load_rules(config_content: Option<String>) -> Result<Vec<Rule>> {
+    fn load_rules(config_content: Option<String>, exe_name: &str) -> Result<Vec<Rule>> {
         match config_content {
-            None => Ok(vec![Rule::get_defualt_rule()]),
+            None => Ok(vec![Rule::get_exe_rule(exe_name)]),
             Some(text) => {
                 let mut rules = Vec::new();
                 for (idx, line) in text.lines().enumerate() {
@@ -50,7 +52,7 @@ impl Runner {
                         .map_err(|_| anyhow!("Config file has invalid rule at line {}", idx + 1))?;
                     rules.push(rule);
                 }
-                rules.push(Rule::get_defualt_rule());
+                rules.push(Rule::get_exe_rule(exe_name));
                 Ok(rules)
             }
         }
@@ -102,9 +104,14 @@ impl Rule {
         Ok(rule)
     }
 
-    pub fn get_defualt_rule() -> Self {
+    pub fn get_exe_rule(exe_name: &str) -> Self {
+        let name = if exe_name.ends_with('f') {
+            format!("{}ile", exe_name)
+        } else {
+            format!("{}file", exe_name)
+        };
         Rule {
-            name: "taskfile".into(),
+            name,
             shell: "$file $@".into(),
         }
     }
@@ -152,11 +159,12 @@ impl State {
         }
         Ok(output)
     }
-    pub fn env_vars(&self) -> HashMap<String, String> {
+    pub fn env_vars(&self, exe_name: &str) -> HashMap<String, String> {
+        let prefix = exe_name.to_uppercase();
         let mut output: HashMap<String, String> = Default::default();
-        output.insert("XF_CURRENT_DIR".into(), self.current_dir.clone());
-        output.insert("XF_FILE".into(), self.file.clone());
-        output.insert("XF_FILE_DIR".into(), self.file_dir.clone());
+        output.insert(format!("{}_CURRENT_DIR", prefix), self.current_dir.clone());
+        output.insert(format!("{}_FILE", prefix), self.file.clone());
+        output.insert(format!("{}_FILE_DIR", prefix), self.file_dir.clone());
         output
     }
 }
@@ -209,8 +217,8 @@ mod tests {
         use super::*;
 
         macro_rules! new_state {
-            ($wokdir:expr, $file:expr) => {{
-                let current_dir: PathBuf = $wokdir.parse().unwrap();
+            ($workdir:expr, $file:expr) => {{
+                let current_dir: PathBuf = $workdir.parse().unwrap();
                 let file: PathBuf = $file.parse().unwrap();
                 State::new(&current_dir, &file)
             }};

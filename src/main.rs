@@ -1,5 +1,5 @@
 use std::{
-    env::{self, args},
+    env::{self, args, current_exe},
     fs,
     path::Path,
     process::{exit, ExitStatus},
@@ -7,8 +7,6 @@ use std::{
 
 use anyhow::{anyhow, Result};
 use xf::Runner;
-
-const ENV_NAME: &str = "XF_CONFIG_PATH";
 
 fn main() {
     match run() {
@@ -22,13 +20,19 @@ fn main() {
 fn run() -> Result<ExitStatus> {
     let args: Vec<String> = args().collect();
     let cwd = env::current_dir().map_err(|e| anyhow!("Fail to get cwd, {}", e))?;
-    let rules = load_config_file()?;
-    let runner = Runner::create(rules)?;
+    let exe_name = current_exe()?;
+    let exe_name = exe_name
+        .file_stem()
+        .and_then(|v| v.to_str())
+        .ok_or_else(|| anyhow!("Fail to get exe name"))?;
+    let rules = load_config_file(exe_name)?;
+    let runner = Runner::create(rules, exe_name)?;
     runner.run(&cwd, &args[1..])
 }
 
-fn load_config_file() -> Result<Option<String>> {
-    let config_file = match env::var(ENV_NAME) {
+fn load_config_file(exe_name: &str) -> Result<Option<String>> {
+    let env_name = format!("{}_CONFIG_PATH", exe_name.to_uppercase());
+    let config_file = match env::var(&env_name) {
         Ok(v) => v,
         Err(_) => return Ok(None),
     };
