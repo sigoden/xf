@@ -1,4 +1,4 @@
-use crate::{assert_output, env_config_path, fixtures_dir, xf};
+use crate::{assert_output, fixtures_dir, xf, xf_with_config};
 
 #[test]
 fn basic() {
@@ -21,9 +21,8 @@ args: a b
 
 #[test]
 fn with_config() {
-    let assert = xf()
+    let assert = xf_with_config(&["dir1", "config1"])
         .current_dir("tests/fixtures/dir1")
-        .env(env_config_path(), &fixtures_dir(&["dir1", "config1"]))
         .args(&["a", "b"])
         .assert()
         .success();
@@ -41,9 +40,8 @@ args: foo a b
 
 #[test]
 fn with_config_contains_spaces_and_comment() {
-    let assert = xf()
+    let assert = xf_with_config(&["dir1", "config2"])
         .current_dir("tests/fixtures/dir1")
-        .env(env_config_path(), &fixtures_dir(&["dir1", "config2"]))
         .args(&["a", "b"])
         .assert()
         .success();
@@ -80,9 +78,8 @@ args: a b
 
 #[test]
 fn rule_precedence() {
-    let assert = xf()
+    let assert = xf_with_config(&["dir1", "config3"])
         .current_dir("tests/fixtures/dir1")
-        .env(env_config_path(), &fixtures_dir(&["dir1", "config3"]))
         .assert()
         .success();
     assert_output!(
