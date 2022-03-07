@@ -48,8 +48,9 @@ impl Runner {
                     if line.is_empty() || line.starts_with('#') {
                         continue;
                     }
-                    let rule = Rule::create(line)
-                        .map_err(|_| anyhow!("Fail to parse rule in the config file at line {}", idx + 1))?;
+                    let rule = Rule::create(line).map_err(|_| {
+                        anyhow!("Fail to parse rule in the config file at line {}", idx + 1)
+                    })?;
                     rules.push(rule);
                 }
                 rules.push(Rule::get_exe_rule(exe_name));
