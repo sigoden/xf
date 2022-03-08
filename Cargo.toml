@@ -13,8 +13,8 @@ keywords = ["command-line", "args", "utility"]
 
 
 [dependencies]
-anyhow = "1"
-shell-words = "1.1"
+anyhow = "1.0.56"
+shell-words = "1.1.0"
 
 [profile.release]
 lto = true
