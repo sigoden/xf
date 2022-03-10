@@ -1,9 +1,23 @@
 # xf
 
+[![CI](https://github.com/sigoden/xf/actions/workflows/ci.yaml/badge.svg)](https://github.com/sigoden/xf/actions/workflows/ci.yaml)
+[![Crates](https://img.shields.io/crates/v/xf.svg)](https://crates.io/crates/xf)
+
 File-aware dynamic command runner.
 
 Xf try to find a file from the current directory and upwards, and execute different command according to the different file found.
 
+ ## Install
+
+### With cargo
+
+```
+cargo install xf
+```
+
+### Binaries on macOS, Linux, Windows
+
+Download from [Github Releases](https://github.com/sigoden/xf/releases), unzip and add xf to your $PATH.
 ## Usage
 
 Xf loads rules from configuration file.
