@@ -23,7 +23,7 @@ impl Runner {
     pub fn run(&self, cwd: &Path, args: &[String]) -> Result<ExitStatus> {
         let (rule, file) = self
             .search_folder_recursive(cwd)
-            .ok_or(anyhow!("Not found any matched file"))?;
+            .ok_or_else(|| anyhow!("Not found any matched file"))?;
         let state = State::new(cwd, &file);
         let env_vars = state.env_vars(&self.exe_name);
         let args = state
