@@ -2,7 +2,7 @@ use std::{
     env::{self, args, current_exe},
     fs,
     path::Path,
-    process::{exit, ExitStatus},
+    process::{self, exit, ExitStatus},
 };
 
 use anyhow::{anyhow, Result};
@@ -19,7 +19,13 @@ fn main() {
 
 fn run() -> Result<ExitStatus> {
     let args: Vec<String> = args().collect();
-    let cwd = env::current_dir().map_err(|e| anyhow!("Fail to get cwd, {}", e))?;
+    if let Some(arg) = args.get(1) {
+        if arg.as_str() == "--xf-version" {
+            print_xf_version();
+            process::exit(0);
+        }
+    }
+    let cwd = env::current_dir().map_err(|e| anyhow!("Fail to found cwd, {}", e))?;
     let exe_name = current_exe()?;
     let exe_name = exe_name
         .file_stem()
@@ -56,4 +62,17 @@ fn load_config_file(path: &Path) -> Option<String> {
         return None;
     }
     fs::read_to_string(path).ok()
+}
+
+fn print_xf_version() {
+    println!(
+        r#"{name} {version}
+{author}
+{desc} - {repo}"#,
+        name = env!("CARGO_CRATE_NAME"),
+        version = env!("CARGO_PKG_VERSION"),
+        author = env!("CARGO_PKG_AUTHORS"),
+        desc = env!("CARGO_PKG_DESCRIPTION"),
+        repo = env!("CARGO_PKG_REPOSITORY")
+    )
 }
