@@ -90,3 +90,11 @@ fn rule_precedence() {
         "<dir>"
     );
 }
+
+#[test]
+fn xf_help() {
+    let assert = xf().args(&["--xf-version"]).assert().success();
+    let output = assert.get_output();
+    let content = String::from_utf8_lossy(&output.stdout);
+    assert!(content.starts_with("xf "))
+}
