@@ -3,7 +3,7 @@ use std::{
     collections::HashMap,
     fs,
     path::{Path, PathBuf},
-    process::{Command, ExitStatus},
+    process::Command,
 };
 
 pub struct Runner {
@@ -20,7 +20,7 @@ impl Runner {
         Ok(xf)
     }
 
-    pub fn run(&self, cwd: &Path, args: &[String]) -> Result<ExitStatus> {
+    pub fn run(&self, cwd: &Path, args: &[String]) -> Result<i32> {
         let (rule, file) = self
             .search_folder_recursive(cwd)
             .ok_or_else(|| anyhow!("Not found file"))?;
@@ -33,9 +33,10 @@ impl Runner {
         command.args(&args[1..]);
         command.current_dir(&state.file_dir);
         command.envs(&env_vars);
-        command
+        let status = command
             .status()
-            .map_err(|e| anyhow!("Run file {} throw {}", &state.file, e))
+            .map_err(|e| anyhow!("Run file {} throw {}", &state.file, e))?;
+        Ok(status.code().unwrap_or_default())
     }
 
     fn load_rules(config_content: Option<String>, exe_name: &str) -> Result<Vec<Rule>> {

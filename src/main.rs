@@ -2,7 +2,7 @@ use std::{
     env::{self, args, current_exe},
     fs,
     path::Path,
-    process::{self, exit, ExitStatus},
+    process::exit,
 };
 
 use anyhow::{anyhow, Result};
@@ -10,19 +10,19 @@ use xf::Runner;
 
 fn main() {
     match run() {
-        Ok(status) => exit(status.code().unwrap_or_default()),
+        Ok(code) => exit(code),
         Err(err) => {
             eprintln!("error: {}", err);
         }
     }
 }
 
-fn run() -> Result<ExitStatus> {
+fn run() -> Result<i32> {
     let args: Vec<String> = args().collect();
     if let Some(arg) = args.get(1) {
         if arg.as_str() == "--xf-version" {
             print_xf_version();
-            process::exit(0);
+            return Ok(0);
         }
     }
     let cwd = env::current_dir().map_err(|e| anyhow!("Fail to found cwd, {}", e))?;

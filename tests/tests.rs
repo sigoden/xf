@@ -8,11 +8,16 @@ mod windows_tests;
 
 #[macro_export]
 macro_rules! assert_output {
-    ($assert:expr, $output:literal, $from:expr, $to:expr) => {
+    ($assert:expr, $expect:literal) => {
+        let output = $assert.get_output();
+        let content = String::from_utf8_lossy(&output.stdout);
+        assert_eq!(&content, $expect);
+    };
+    ($assert:expr, $expect:literal, $from:expr, $to:expr) => {
         let output = $assert.get_output();
         let content = String::from_utf8_lossy(&output.stdout);
         let content = content.replace($from, $to);
-        assert_eq!(&content, $output)
+        assert_eq!(&content, $expect);
     };
 }
 
